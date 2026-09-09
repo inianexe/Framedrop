@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FrameDrop</title><link rel="stylesheet" href="popup.css"></head><body data-mode="video" data-phase="idle">
+<header><img class="brand-logo" src="icons/logo.png" alt="FrameDrop logo" width="44" height="44"><div><b>FRAMEDROP</b><small>by iniexe</small><small>A little keeper of good things.</small></div><span class="spark">✦</span></header>
+<main><div class="eyebrow">FROM YOUR SCREEN. TO YOUR COLLECTION.</div><section class="hero"><span class="star one">✦</span><div class="drawing" aria-hidden="true"><span class="play-glyph">▶</span><span class="equalizer"><b></b><b></b><b></b><b></b></span><i id="heroArrow">↓</i></div><div id="celebration" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div><span class="star two">✦</span></section>
+<h1>Worth keeping.</h1><p class="intro">Your video. Your quality. One neat download.</p>
+<section class="video"><span class="video-icon">▶</span><div><small>CURRENT VIDEO</small><strong id="title">Open a YouTube video to begin</strong></div><button id="refresh" aria-label="Refresh video">↻</button></section>
+<div class="tabs" role="group" aria-label="Download type"><button id="video" aria-pressed="true">▣ &nbsp; Video</button><button id="audio" aria-pressed="false">♫ &nbsp; MP3 audio</button></div>
+<label for="quality">QUALITY <span id="formatNote">Available from source</span></label><select id="quality" disabled><option>Load a video first</option></select>
+<p class="hint" id="hint">Video includes audio. Original codecs are preserved.</p>
+<button class="primary" id="download" disabled>✦ &nbsp; Download video &nbsp; ↓</button>
+<div class="status" role="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="status">Ready when you are.</span><progress id="progress" max="100" hidden></progress><button id="cancel" hidden>Cancel task</button></div>
+<details id="setup"><summary>Download helper setup <span>↗</span></summary><p>The extension needs a local helper to fetch video and convert MP3. Loading the add-on alone is not enough. From the extracted framedrop folder, run the setup command in README.md. It checks dependencies and registers the helper.</p><code id="extensionId"></code><p>See README.md in your FrameDrop package for exact steps. Downloads go to Downloads/FrameDrop.</p></details>
+<button id="motionToggle" class="motion-toggle" aria-pressed="true">Motion on</button>
+<footer>LOCAL DOWNLOADS <span>✦</span> ZERO CLOUD UPLOADS</footer></main><script src="popup.js"></script></body></html>

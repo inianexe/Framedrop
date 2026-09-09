@@ -1,0 +1,3 @@
+#!/bin/sh
+export PATH=/home/inian/.local/share/mise/installs/codex/latest/bin:/home/inian/.local/share/mise/installs/copilot/latest:/home/inian/.local/share/mise/installs/gh/latest/gh_2.100.0_linux_amd64/bin:/home/inian/.local/share/mise/installs/node/26.7.0/bin:/usr/share/omarchy/bin:/home/inian/.local/share/mise/shims:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/inian/.local/share/mise/shims:/home/inian/.local/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+exec /home/inian/Projects/FrameDrop-0.1.5/framedrop/.venv/bin/python /home/inian/Projects/FrameDrop-0.1.5/framedrop/helper/host.py

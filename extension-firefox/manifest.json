@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "FrameDrop \u2014 Video & MP3",
+  "version": "0.1.5",
+  "description": "Save permitted YouTube videos and MP3 audio using a private local helper.",
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "framedrop@inianexe",
+      "strict_min_version": "128.0"
+    }
+  },
+  "author": "iniexe",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
