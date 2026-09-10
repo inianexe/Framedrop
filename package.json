@@ -3,10 +3,13 @@
   "version": "0.1.5",
   "private": true,
   "scripts": {
-    "test:ui": "node tests/ui.cjs"
+    "test:ui": "node tests/ui.cjs",
+    "test": "node --test tests/background.cjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"
   },
-  "author": "iniexe"
+  "author": "iniexe",
+  "license": "MIT",
+  "description": "FrameDrop local-helper browser extension by iniexe"
 }

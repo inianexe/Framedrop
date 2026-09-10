@@ -1,0 +1,26 @@
+name: Repository checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Python validation tests
+        run: python -m unittest discover -s tests
+      - name: Background messaging regressions
+        run: node --test tests/background.cjs
+      - name: Repository consistency and syntax
+        run: python tools/check_repo.py
+      - name: Check clean packaging
+        run: python tools/package_repo.py

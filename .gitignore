@@ -1,0 +1,17 @@
+# Local Python and development dependencies
+.venv/
+__pycache__/
+*.py[cod]
+node_modules/
+.pytest_cache/
+# Machine-specific native host launchers and registrations
+helper/launch.*
+helper/com.framedrop.helper*.json
+# Generated artifacts and private local configuration
+dist/
+artifacts/
+docs/interface.png
+.env
+.env.*
+.DS_Store
+Thumbs.db
