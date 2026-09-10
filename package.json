@@ -1,6 +1,6 @@
 {
   "name": "framedrop",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "scripts": {
     "test:ui": "node tests/ui.cjs",

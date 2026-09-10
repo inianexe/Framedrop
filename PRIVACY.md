@@ -1,6 +1,6 @@
 # Privacy
 
-FrameDrop v0.1.5 uses a local helper, with no FrameDrop-hosted download server, account system, or analytics endpoint.
+FrameDrop v0.1.6 uses a local helper, with no FrameDrop-hosted download server, account system, or analytics endpoint.
 
 ## What the extension handles
 

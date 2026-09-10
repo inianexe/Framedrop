@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.6 — Guided browser setup and Arch installation
+
+- Prompt for a missing Chrome, Edge, or Chromium extension ID in interactive terminals.
+- Validate IDs before installing dependencies or writing configuration.
+- Keep explicit `--id` support for automation and the fixed Firefox ID.
+- Add Arch/pacman requirements, browser-specific commands, and virtual-environment guidance.
+- Add seven setup regression tests.
+
+
 ## 0.1.5 — Local-helper repository edition
 
 - Improved Firefox native-host error reporting and helper-launch failure handling.

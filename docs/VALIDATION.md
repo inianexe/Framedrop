@@ -1,10 +1,11 @@
 # Validation record
 
-Repository edition: **0.1.5**. Prepared: **2026-09-10**.
+Repository edition: **0.1.6**. Prepared: **2026-09-10**.
 
 ## Checks run locally
 
 - Python URL validation, unsupported-content guard, and format filtering: four unit tests.
+- Installer ID prompting and validation: seven tests, including non-interactive input, Firefox ID and cancellation.
 - JavaScript background messaging: five regressions for Firefox `Port.error`, Chrome `runtime.lastError`, synchronous launch failure, normal completion/disconnection, and cancellation.
 - Both browser manifests, version consistency, icon and script references, and shared-source parity.
 - JavaScript syntax and Python parsing.

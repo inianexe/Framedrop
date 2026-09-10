@@ -4,7 +4,7 @@
 
 <h1 align="center">FrameDrop</h1>
 <p align="center"><strong>Worth keeping.</strong><br>Video and MP3 downloads, with a little ink-and-paper personality.<br>Created by <strong>iniexe</strong></p>
-<p align="center"><strong>v0.1.5 · Local processing · Chrome / Edge / Firefox · MIT</strong></p>
+<p align="center"><strong>v0.1.6 · Local processing · Chrome / Edge / Firefox · MIT</strong></p>
 
 FrameDrop adds a download button to YouTube. Open a video, choose a video format or MP3 bitrate, and save the result on your computer. A warm cream interface, black outlines, subtle animations, and clear status feedback keep the controls simple.
 
@@ -175,7 +175,54 @@ ffprobe -version
 deno --version
 ```
 
-For Fedora, Arch, or other distributions, install Python with virtual-environment support and FFmpeg/ffprobe using that distribution's package manager. Use the [official Deno installation guide](https://docs.deno.com/runtime/getting_started/installation/) for Deno, then run the same version checks. Distribution-specific package commands beyond Ubuntu/Debian are not provided here.
+For Fedora or other distributions, install Python with virtual-environment support and FFmpeg/ffprobe using that distribution's package manager. Use the [official Deno installation guide](https://docs.deno.com/runtime/getting_started/installation/) for Deno, then run the same version checks. For Arch-based systems, use the next section.
+
+</details>
+
+<details>
+<summary><strong>Linux — Arch and Arch-based distributions</strong></summary>
+
+For Arch Linux and derivatives using pacman (such as EndeavourOS, CachyOS, or Manjaro), use your distribution's configured repositories:
+
+```sh
+sudo pacman -Syu --needed python python-pip ffmpeg deno
+```
+
+This command performs a full system upgrade as well as installing the requirements. Review pacman's transaction before accepting. Do not substitute a partial `pacman -Sy` upgrade.
+
+The [Python](https://archlinux.org/packages/core/x86_64/python/), [pip](https://archlinux.org/packages/extra/any/python-pip/), [FFmpeg](https://archlinux.org/packages/extra/x86_64/ffmpeg/), and [Deno](https://archlinux.org/packages/extra/x86_64/deno/) packages are available in the official Arch repositories. Derivatives can ship different versions. Python includes `venv`; do not look for Debian's `python3-venv` package on Arch. FFmpeg provides `ffprobe` too.
+
+Verify in your terminal:
+
+```sh
+python3 --version
+ffmpeg -version
+ffprobe -version
+deno --version
+```
+
+Continue with Step 3 to load the correct browser build, then open a terminal in the project root and run **one** matching setup command:
+
+```sh
+# Firefox
+python3 setup.py --browser firefox
+```
+
+```sh
+# Google Chrome — prompts for the extension ID
+python3 setup.py --browser chrome
+```
+
+```sh
+# Chromium — use this option for the Chromium browser, not Google Chrome
+python3 setup.py --browser chromium
+```
+
+Use `--browser edge` for Edge. Copy the ID from FrameDrop's card on the browser extensions page when prompted; the ID is different for each browser installation. You can still pass it explicitly with `--id YOUR_EXTENSION_ID`.
+
+Run FrameDrop setup as your **normal user**, without sudo. It installs yt-dlp into the project's `.venv`, avoiding changes to the system Python environment. You do not need `sudo pip` or `--break-system-packages`.
+
+If a later Arch Python upgrade breaks the old virtual environment, stop downloads, rename `.venv` to a backup name, and rerun setup using the current Python. This recreates the environment and registers the current helper path. Remove the backup only after the new setup works.
 
 </details>
 
@@ -210,7 +257,7 @@ Open a terminal **inside the project root**, where `setup.py` is located.
 - **Windows:** open the folder in File Explorer, type `powershell` in the address bar, and press Enter.
 - **macOS/Linux:** open Terminal and run `cd` followed by your folder path. You can drag the folder into Terminal to insert its path after `cd `.
 
-Run **one command** matching your browser and operating system. Replace `YOUR_EXTENSION_ID` with the actual ID from Step 3; do not type the placeholder literally.
+Run **one command** matching your browser and operating system. With v0.1.6+, you may omit `--id YOUR_EXTENSION_ID` in an interactive terminal: setup explains where to find the ID and prompts you to paste it. For scripts or non-interactive terminals, provide `--id` explicitly. Replace `YOUR_EXTENSION_ID` with the actual ID from Step 3; do not type the placeholder literally.
 
 | Browser | Windows PowerShell | macOS / Linux Terminal |
 | --- | --- | --- |
@@ -280,6 +327,7 @@ This is the helper's folder under your user home, **not** a browser-selected dow
 
 | Problem | What to do |
 | --- | --- |
+| `Supply --id with your extension ID for Chromium browsers` | This is the old installer. Download the latest source, or add `--id` followed by the actual ID from the FrameDrop card. Firefox setup success does not register Chrome. |
 | `background.service_worker is currently disabled` | You loaded the Chrome build in Firefox. Load `extension-firefox/manifest.json`. |
 | Manifest missing or unreadable | Extract the complete ZIP. In Chrome/Edge select `extension`; in Firefox select `extension-firefox/manifest.json`. |
 | Helper unavailable / native application not found | Run Step 4 for the correct browser. Check the exact extension ID and keep the project at its installed path. |

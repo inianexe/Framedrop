@@ -52,7 +52,7 @@ Replace `YOUR_USERNAME` with the account that owns the new repository. Authentic
 
 ## 4. Optional GitHub Release
 
-Once uploaded and checked, create a release with tag `v0.1.5` and title **FrameDrop v0.1.5 — Local Video & MP3 Downloader**. Mark it as a **pre-release** while live-download/cross-platform verification is incomplete.
+Once uploaded and checked, create a release with tag `v0.1.6` and title **FrameDrop v0.1.6 — Local Video & MP3 Downloader**. Mark it as a **pre-release** while live-download/cross-platform verification is incomplete.
 
 Suggested release notes:
 
