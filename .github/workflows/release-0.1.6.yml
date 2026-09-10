@@ -1,0 +1,74 @@
+name: Publish FrameDrop v0.1.6
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-0.1.6.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: framedrop-release-0.1.6
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_COMMIT: 0f7a419618ba269a0d94e6375d0158a560e6bd39
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0f7a419618ba269a0d94e6375d0158a560e6bd39
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate release source
+        run: |
+          python -m unittest discover -s tests
+          node --test tests/background.cjs
+          python tools/check_repo.py
+          python tools/package_repo.py
+      - name: Verify ZIP versions
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          with zipfile.ZipFile('dist/FrameDrop-0.1.6-repository.zip') as archive:
+              assert archive.testzip() is None
+              for name in ('extension/manifest.json', 'extension-firefox/manifest.json', 'package.json'):
+                  assert json.loads(archive.read('FrameDrop/' + name))['version'] == '0.1.6'
+              assert b'Paste the FrameDrop extension ID' in archive.read('FrameDrop/setup.py')
+          PY
+      - name: Publish complete release ZIP
+        run: |
+          cat > /tmp/framedrop-release-notes.md <<'NOTES'
+          ## FrameDrop v0.1.6
+          
+          Download **FrameDrop-0.1.6-repository.zip** below. It contains both browser builds, the local helper, setup scripts, screenshots, and the complete installation guide.
+          
+          ### Changes
+          - Chrome, Edge, and Chromium setup now prompts for an omitted extension ID.
+          - IDs are validated before installation changes begin.
+          - Added Arch-based pacman installation instructions.
+          - Includes the expanded installation/usage README and all three screenshots.
+          
+          ### Install or update
+          Extract the ZIP to a permanent folder and open **FrameDrop/README.md**. Install the listed requirements, load the correct extension folder, and run setup from the extracted FrameDrop folder.
+          
+          For Chrome: `python3 setup.py --browser chrome` (Windows: use `py`). Paste the ID shown on FrameDrop's card at `chrome://extensions` when prompted.
+          
+          For Firefox: `python3 setup.py --browser firefox`. Load `extension-firefox/manifest.json`; temporary add-ons must be reloaded after browser restart.
+          
+          This release replaces the old v0.1 release download containing version 0.1.5. Files already extracted on your computer do not update automatically. Load the extension from the new folder and rerun setup there.
+          
+          **Validation:** 16 automated tests and repository checks. This remains a developer preview; completed live downloads and all OS/browser combinations are not independently verified.
+          NOTES
+          if gh release view v0.1.6 >/dev/null 2>&1; then
+            echo "v0.1.6 already exists; leaving the published release unchanged."
+            exit 0
+          fi
+          gh release create v0.1.6 dist/FrameDrop-0.1.6-repository.zip --target "$RELEASE_COMMIT" --title "FrameDrop v0.1.6 — Guided setup and Arch support" --notes-file /tmp/framedrop-release-notes.md --latest
