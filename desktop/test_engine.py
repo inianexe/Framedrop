@@ -13,5 +13,5 @@ class EngineTests(unittest.TestCase):
             self.assertTrue(guard(info))
         self.assertIsNone(guard({'age_limit':0}))
     def test_unknown_resolution_and_drm(self):
-        info = {'formats':[{'format_id':'http-1','vcodec':'h264','ext':'mp4'}, {'format_id':'drm','vcodec':'h264','has_drm':True}]}
+        info = {'formats':[{'format_id':'http-1','ext':'mp4'}, {'format_id':'drm','vcodec':'h264','has_drm':True}]}
         self.assertEqual([f['id'] for f in choices(info)], ['http-1'])

@@ -8,7 +8,7 @@ The Desktop builds workflow builds Windows x64, Linux x64 (Ubuntu 22.04 baseline
 
 Download your platform artifact from GitHub Actions, extract the outer ZIP and enclosed tar.gz, and keep the extracted folder intact. Windows: open `FrameDrop/FrameDrop.exe`. Linux: open `FrameDrop/FrameDrop`. macOS: open `FrameDrop.app`.
 
-These are portable, unsigned developer previews, not signed installation packages. macOS notarization, Windows signing, native installation packages, and automatic updates remain release work. Do not disable operating-system protections to run a build. The app bundles Python, Qt, yt-dlp, its EJS package, FFmpeg, and Deno. FFmpeg is supplied through imageio-ffmpeg; the desktop engine does not require a separate ffprobe executable. This differs from the legacy extension helper.
+These are unsigned developer previews. Windows also has a per-user setup executable, macOS a drag-to-Applications DMG, and Linux an install-linux.sh script that adds FrameDrop to the application menu without sudo. macOS notarization, Windows signing, and automatic updates remain release work. Do not disable operating-system protections to run a build. The app bundles Python, Qt, yt-dlp, its EJS package, FFmpeg, and Deno. FFmpeg is supplied through imageio-ffmpeg; the desktop engine does not require a separate ffprobe executable. This differs from the legacy extension helper.
 
 No browser extension, extension ID, Python installation, or manual pip commands are required for packaged builds. Downloads still need internet access. Desktop and extension are separate interfaces; the extension is currently YouTube-only.
 

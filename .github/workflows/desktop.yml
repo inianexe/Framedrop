@@ -17,6 +17,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Linux GUI libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxcb-xkb1 libxkbcommon-x11-0
       - run: python -m pip install -r desktop/requirements.txt
       - run: python -m unittest discover -s desktop -p 'test_*.py'
       - run: python desktop/build.py
@@ -34,10 +37,49 @@ jobs:
           else
             desktop/dist/FrameDrop/FrameDrop --smoke-test
           fi
+      - name: Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: '& "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" desktop/windows.iss'
+      - name: macOS disk image
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p desktop/release dmg
+          cp -R desktop/dist/FrameDrop.app dmg/
+          ln -s /Applications dmg/Applications
+          hdiutil create -volname FrameDrop -srcfolder dmg -ov -format UDZO desktop/release/FrameDrop-${{ matrix.os }}.dmg
+      - name: Linux installer script
+        if: runner.os == 'Linux'
+        run: cp desktop/install-linux.sh desktop/dist/ && chmod +x desktop/dist/install-linux.sh
       - name: Archive executable permissions
         shell: bash
         run: tar -czf FrameDrop-${{ matrix.os }}.tar.gz -C desktop/dist .
       - uses: actions/upload-artifact@v4
         with:
           name: FrameDrop-${{ matrix.os }}
-          path: FrameDrop-*.tar.gz
+          path: |
+            FrameDrop-*.tar.gz
+            desktop/release/*
+  publish:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Publish desktop preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          if gh release view v0.2.0-desktop-preview >/dev/null 2>&1; then
+            echo 'Preview already exists; artifacts remain available in this workflow run.'
+            exit 0
+          fi
+          find artifacts -type f -print0 | xargs -0 sha256sum > SHA256SUMS.txt
+          mapfile -d '' assets < <(find artifacts -type f -print0)
+          gh release create v0.2.0-desktop-preview "${assets[@]}" SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title 'FrameDrop Desktop 0.2.0 — Preview' --notes 'Bundled local desktop app for Windows x64, macOS Intel/Apple Silicon, and Linux x64. Public video pages supported by yt-dlp, direct media links, video quality selection, and MP3 conversion. No manual Python setup or extension ID required. Windows setup EXE, macOS DMGs, and Linux tar.gz with install script included. Unsigned developer preview: not notarized, no automatic updates, and not certified across every OS/browser or live site. Read desktop/README.md in this tag before installing. Download only content you are permitted to save.'

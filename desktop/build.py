@@ -25,6 +25,6 @@ subprocess.run([str(root/'bin'/exe), '--version'], check=True)
 import imageio_ffmpeg
 subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-version'], check=True)
 subprocess.run([sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean', '--windowed',
-    '--name', 'FrameDrop', '--collect-all', 'yt_dlp', '--collect-all', 'yt_dlp_ejs',
+    '--name', 'FrameDrop', '--add-data', str(root.parent/'extension/icons/icon-128.png')+os.pathsep+'.', '--collect-all', 'yt_dlp', '--collect-all', 'yt_dlp_ejs',
     '--collect-all', 'imageio_ffmpeg', '--add-binary', str(root/'bin'/exe)+os.pathsep+'bin', 'app.py'], check=True)
 (root/'dist'/'BUILD-INFO.json').write_text(json.dumps({'deno':release['tag_name'],'deno_sha256':digest,'platform':platform.platform()}, indent=2))

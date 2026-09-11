@@ -28,7 +28,7 @@ def guard(info, *, incomplete=False):
 def choices(info):
     result = []
     for f in info.get('formats', []):
-        if f.get('has_drm') or f.get('vcodec') in (None, 'none'):
+        if f.get('has_drm') or f.get('vcodec') == 'none':
             continue
         result.append({'id': str(f['format_id']), 'label': '{} · {} · {}'.format(
             str(f['height'])+'p' if f.get('height') else 'Source quality',
@@ -44,7 +44,7 @@ class Engine:
         import imageio_ffmpeg
         root = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
         deno = root / 'bin' / ('deno.exe' if os.name == 'nt' else 'deno')
-        opts = dict(quiet=True, no_warnings=True, noplaylist=True, age_limit=17,
+        opts = dict(quiet=True, no_warnings=True, noprogress=True, noplaylist=True, age_limit=17,
                     match_filter=guard, socket_timeout=25, retries=3,
                     ffmpeg_location=imageio_ffmpeg.get_ffmpeg_exe(),
                     progress_hooks=[self.progress], windowsfilenames=True)
@@ -82,7 +82,7 @@ class Engine:
             # A callable selects exact IDs without interpreting them as format expressions.
             def select(context):
                 video = next(f for f in context['formats'] if str(f['format_id']) == selection)
-                if video.get('acodec') not in (None, 'none'):
+                if video.get('acodec') != 'none':
                     yield video
                     return
                 audio = next((f for f in reversed(context['formats'])

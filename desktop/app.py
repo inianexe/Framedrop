@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QComboBox, QProgressBar, QFileDialog)
 from engine import Engine, choices
@@ -28,6 +28,7 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('FrameDrop • by iniexe')
+        self.setWindowIcon(QIcon(str(Path(getattr(sys, '_MEIPASS', Path(__file__).parent)) / 'icon-128.png')))
         self.resize(570, 640)
         self.folder = str(Path.home() / 'Downloads' / 'FrameDrop')
         self.info = None
