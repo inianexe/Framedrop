@@ -1,4 +1,4 @@
-> **Desktop preview:** A browser-independent app with bundled dependencies and broader public-video URL support is being built for Windows, macOS, and Linux. See [desktop setup and limitations](desktop/README.md). The extension release below remains v0.1.6.
+> **FrameDrop Desktop preview:** Windows, macOS, and Linux builds bundle the downloader tools and accept supported public video links beyond YouTube. [Download and installation guide](docs/DESKTOP-INSTALL.md). The browser extension below remains v0.1.6.
 
 <p align="center">
   <img src="extension/icons/logo.png" alt="FrameDrop logo" width="112">
