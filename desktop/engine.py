@@ -46,7 +46,7 @@ class Engine:
         deno = root / 'bin' / ('deno.exe' if os.name == 'nt' else 'deno')
         opts = dict(quiet=True, no_warnings=True, noprogress=True, noplaylist=True, age_limit=17,
                     match_filter=guard, socket_timeout=25, retries=3,
-                    ffmpeg_location=imageio_ffmpeg.get_ffmpeg_exe(),
+                    ffmpeg_location=str(root/'bin') if (root/'bin'/'ffmpeg').exists() else imageio_ffmpeg.get_ffmpeg_exe(),
                     progress_hooks=[self.progress], windowsfilenames=True)
         if deno.exists():
             opts['js_runtimes'] = {'deno': {'path': str(deno)}}

@@ -8,7 +8,9 @@ class DownloadTests(unittest.TestCase):
         import imageio_ffmpeg
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-y', '-f','lavfi','-i',
+            ff = Engine().options()['ffmpeg_location']
+            ff = str(Path(ff)/'ffmpeg') if Path(ff).is_dir() else ff
+            subprocess.run([ff, '-y', '-f','lavfi','-i',
                 'color=c=black:s=160x90:d=1','-f','lavfi','-i','sine=frequency=440:duration=1',
                 '-c:v','libx264','-c:a','aac','-shortest',str(root/'fixture.mp4')],
                 check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -25,6 +27,13 @@ class DownloadTests(unittest.TestCase):
                 self.assertTrue(list((root/'video').glob('*.mp4')))
                 mp3 = next((root/'audio').glob('*.mp3'))
                 self.assertGreater(mp3.stat().st_size, 1000)
+                for manifest, output_opts in [('stream.m3u8', ['-f', 'hls']), ('stream.mpd', ['-f', 'dash'])]:
+                    subprocess.run([ff, '-y', '-i', str(root/'fixture.mp4'), '-c', 'copy'] + output_opts + [str(root/manifest)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    link = f'http://127.0.0.1:{server.server_port}/{manifest}'
+                    media = engine.inspect(link)
+                    destination = root/manifest.replace('.', '_')
+                    engine.download(link, 'video', choices(media)[0]['id'], destination)
+                    self.assertTrue(any(p.suffix in ('.mp4', '.mkv') and p.stat().st_size > 1000 for p in destination.iterdir()))
             finally:
                 server.shutdown()
                 server.server_close()

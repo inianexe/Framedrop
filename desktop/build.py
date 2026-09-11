@@ -1,5 +1,5 @@
 """Build on the target OS. Download Deno from its official release with digest validation."""
-import hashlib, json, os, platform, subprocess, sys, urllib.request, zipfile, io
+import hashlib, json, os, platform, subprocess, sys, urllib.request, zipfile, io, tarfile
 from pathlib import Path
 root = Path(__file__).resolve().parent
 os.chdir(root)
@@ -21,10 +21,22 @@ exe = 'deno.exe' if os.name == 'nt' else 'deno'
 with zipfile.ZipFile(io.BytesIO(raw)) as archive:
     (root/'bin'/exe).write_bytes(archive.read(exe))
 (root/'bin'/exe).chmod(0o755)
+if sys.platform == 'linux':
+    req = urllib.request.Request('https://api.github.com/repos/yt-dlp/FFmpeg-Builds/releases/latest', headers=headers)
+    ff_release = json.load(urllib.request.urlopen(req))
+    asset_ff = next(a for a in ff_release['assets'] if a['name'] == 'ffmpeg-master-latest-linux64-gpl.tar.xz')
+    data_ff = urllib.request.urlopen(asset_ff['browser_download_url']).read()
+    if asset_ff.get('digest') != 'sha256:'+hashlib.sha256(data_ff).hexdigest():
+        raise RuntimeError('FFmpeg digest mismatch')
+    with tarfile.open(fileobj=io.BytesIO(data_ff), mode='r:xz') as archive:
+        for tool in ('ffmpeg', 'ffprobe'):
+            member = next(m for m in archive.getmembers() if m.name.endswith('/bin/'+tool))
+            (root/'bin'/tool).write_bytes(archive.extractfile(member).read())
+            (root/'bin'/tool).chmod(0o755)
 subprocess.run([str(root/'bin'/exe), '--version'], check=True)
 import imageio_ffmpeg
 subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-version'], check=True)
 subprocess.run([sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean', '--windowed',
     '--name', 'FrameDrop', '--add-data', str(root.parent/'extension/icons/icon-128.png')+os.pathsep+'.', '--collect-all', 'yt_dlp', '--collect-all', 'yt_dlp_ejs',
-    '--collect-all', 'imageio_ffmpeg', '--add-binary', str(root/'bin'/exe)+os.pathsep+'bin', 'app.py'], check=True)
+    '--collect-all', 'imageio_ffmpeg', '--add-binary', str(root/'bin')+os.pathsep+'bin', 'app.py'], check=True)
 (root/'dist'/'BUILD-INFO.json').write_text(json.dumps({'deno':release['tag_name'],'deno_sha256':digest,'platform':platform.platform()}, indent=2))
