@@ -37,6 +37,13 @@ Artifacts expire under GitHub's retention policy. If a download expires, report 
 
 The installer installs to your user profile and includes an uninstaller. Keep all files together if using the enclosed portable archive instead. The preview is unsigned; if your device blocks it, report the warning rather than disabling device protection.
 
+
+### Windows Smart App Control warning
+
+A Windows 11 user reported that installation worked after turning off Smart App Control. This is a user-reported result, not a supported installation requirement: disabling this feature reduces protection for other applications too. FrameDrop does not recommend disabling it or adding antivirus exclusions.
+
+The current preview is unsigned. If Windows reports “An application control policy has blocked this file,” record the blocked filename and check Windows Security → App & browser control → Smart App Control settings without changing it. On a managed device, ask the administrator to review the application. Signed distribution and testing with application control enabled remain release requirements. See [Microsoft's Smart App Control guidance](https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/overview).
+
 ### macOS
 
 1. Download the package matching your Mac's chip and extract the ZIP.
