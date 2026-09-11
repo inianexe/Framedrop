@@ -1,430 +1,162 @@
-> **FrameDrop Desktop preview:** Windows, macOS, and Linux builds bundle the downloader tools and accept supported public video links beyond YouTube. [Download and installation guide](docs/DESKTOP-INSTALL.md). The browser extension below remains v0.1.6.
-
-<p align="center">
-  <img src="extension/icons/logo.png" alt="FrameDrop logo" width="112">
-</p>
+<p align="center"><img src="extension/icons/logo.png" alt="FrameDrop logo" width="112"></p>
 
 <h1 align="center">FrameDrop</h1>
-<p align="center"><strong>Worth keeping.</strong><br>Video and MP3 downloads, with a little ink-and-paper personality.<br>Created by <strong>iniexe</strong></p>
-<p align="center"><strong>v0.1.6 · Local processing · Chrome / Edge / Firefox · MIT</strong></p>
+<p align="center"><strong>Worth keeping.</strong><br>Public video and MP3 downloads, processed on your computer.<br>Created by <strong>iniexe</strong></p>
 
-FrameDrop adds a download button to YouTube. Open a video, choose a video format or MP3 bitrate, and save the result on your computer. A warm cream interface, black outlines, subtle animations, and clear status feedback keep the controls simple.
+**Desktop v0.2.0 preview · Windows / macOS / Linux · Local processing**
 
-> **Read this before installing:** FrameDrop has **two required parts**: the browser extension and a local Python helper. Loading the extension alone will display the interface but **will not download videos**. Complete all four installation steps below once. After that, the browser starts the helper automatically; you do not need to keep a terminal open.
+Paste a supported public video link, choose video quality or MP3, and save it locally. The cream-and-black desktop app bundles its downloader tools and works independently of your browser.
 
-**Start here:** [Installation](#installation) · [Usage](#usage) · [Troubleshooting](#troubleshooting) · [Upload to GitHub](docs/GITHUB-UPLOAD.md)
+**Start here:** [Download](#download) · [Installation](#installation) · [Usage](#usage) · [Troubleshooting](#troubleshooting) · [Legacy extension guide](docs/EXTENSION-INSTALL.md)
 
-## Screenshots
+## Download
 
-### Video mode
+**Desktop v0.2.0 preview** bundles Python, yt-dlp, FFmpeg and the JavaScript runtime. No extension, extension ID, or separate downloader dependency installation is required. Copy links from whichever browser you use.
 
-The current video appears above the output controls. Select a quality and download video with audio.
+The desktop installers are currently **GitHub Actions artifacts**. Release publication is pending; the existing v0.1.6 release is the older extension. Sign into GitHub before downloading these packages. **Code → Download ZIP** and **Source code** downloads contain source, not an installed app.
 
-![FrameDrop video mode on YouTube, with a 2160p source format selected](docs/screenshots/video-mode.png)
-
-### MP3 mode
-
-Switch to audio-only output and choose 128, 192, or 320 kbps.
-
-![FrameDrop MP3 mode on YouTube, with 320 kbps selected](docs/screenshots/mp3-mode.png)
-
-<details>
-<summary><strong>View the available-quality selector</strong></summary>
-<br>
-<img src="docs/screenshots/quality-selector.png" alt="FrameDrop quality menu showing source formats from 2160p downward" width="450">
-
-The menu is built from the formats exposed for that video. Repeated resolutions can represent different containers, codecs, or source format IDs.
-</details>
-
-*These supplied screenshots demonstrate video detection, quality discovery, and the MP3 interface. They do not document a completed file download.*
-
-## Features
-
-- **YouTube integration:** a floating FrameDrop button on watch pages and Shorts, plus the browser toolbar popup.
-- **Source-based quality selection:** resolution, frame rate, source container, codec, and HDR information when available.
-- **Video with audio:** merges separate streams locally through FFmpeg.
-- **MP3 output:** 128, 192, and 320 kbps conversion.
-- **Progress and status:** extraction, download, processing, completion, cancellation, and readable helper errors.
-- **Interactive design:** sliding output switch, equalizer illustration, button feedback, and a completion sparkle.
-- **Accessible motion:** respects system reduced-motion settings and remembers the popup's Motion toggle.
-- **Local workflow:** no FrameDrop account, cloud backend, or hosted conversion service.
-
-## Requirements
-
-| Requirement | Purpose | Installed by FrameDrop setup? |
+| Computer | Download | File to open inside the extracted ZIP |
 | --- | --- | --- |
-| Python **3.10+** with `venv` and `pip` | Runs the helper | No |
-| FFmpeg **and ffprobe** | Merges video/audio and converts MP3 | No |
-| Current Deno | JavaScript runtime used during YouTube extraction | No |
-| `yt-dlp[default]` | Extracts formats and downloads media | **Yes**, inside `.venv` |
-| Recent desktop browser | Runs the extension | No |
+| Windows x64 | [Windows package](https://github.com/inianexe/Framedrop/actions/runs/34566471892/artifacts/10186257722) | `desktop/release/FrameDrop-Windows-x64-Setup.exe` |
+| macOS Apple Silicon (M-series) | [Apple Silicon package](https://github.com/inianexe/Framedrop/actions/runs/34566471892/artifacts/10186232711) | `desktop/release/FrameDrop-macos-15.dmg` |
+| macOS Intel | [Intel Mac package](https://github.com/inianexe/Framedrop/actions/runs/34566471892/artifacts/10186297376) | `desktop/release/FrameDrop-macos-15-intel.dmg` |
+| Linux x64, including compatible Arch desktops | [Linux package](https://github.com/inianexe/Framedrop/actions/runs/34566471892/artifacts/10186229669) | `FrameDrop-ubuntu-22.04.tar.gz` |
 
-The selected setup path uses Deno. Node.js and npm are **not needed for normal installation**; they are only used for developer tests.
+On a Mac, **Apple menu → About This Mac** identifies the chip/processor. These are desktop packages; Android, iOS and Linux ARM packages are not included. Builds were tested on GitHub's Windows, Ubuntu 22.04 and macOS 15 runners; this does not establish a minimum supported OS version or compatibility with every computer.
 
-FFmpeg is a system program: `pip install ffmpeg` is **not** a replacement for the `ffmpeg` and `ffprobe` executables. See the [official FFmpeg downloads](https://ffmpeg.org/download.html) and [yt-dlp dependency documentation](https://github.com/yt-dlp/yt-dlp#dependencies).
-
-### Browser support
-
-| Browser | Folder to load | Helper setup option | Notes |
-| --- | --- | --- | --- |
-| Chrome 127+ | `extension` | `--browser chrome --id YOUR_EXTENSION_ID` | Developer mode / Load unpacked |
-| Edge 127+ | `extension` | `--browser edge --id YOUR_EXTENSION_ID` | Developer mode / Load unpacked |
-| Chromium 127+ | `extension` | `--browser chromium --id YOUR_EXTENSION_ID` | Uses Chromium's registration location |
-| Firefox 128+ | `extension-firefox/manifest.json` | `--browser firefox` | Temporary installation; reload after browser restart |
-
-Other browser forks and mobile browsers are not validated. In particular, Snap/Flatpak packaging can prevent a browser from finding or launching the host. Start with a standard system-installed browser if native messaging fails.
+Artifacts expire under GitHub's retention policy. If a download expires, report it through [Issues](https://github.com/inianexe/Framedrop/issues).
 
 ## Installation
 
-### 1. Download and extract the complete project
+### Windows
 
-On GitHub, choose **Code → Download ZIP**, then extract it to a permanent folder, such as `Documents/FrameDrop`.
+1. Download the Windows package above and choose **Extract All**.
+2. Open `desktop/release` inside the extracted folder.
+3. Run **FrameDrop-Windows-x64-Setup.exe** as your normal user.
+4. Follow Setup and launch **FrameDrop** from the Start menu or desktop shortcut.
 
-Open that folder. You should see **`README.md`**, **`setup.py`**, **`helper`**, **`extension`**, and **`extension-firefox`** together. This is the **project root** used in the commands below.
+The installer installs to your user profile and includes an uninstaller. Keep all files together if using the enclosed portable archive instead. The preview is unsigned; if your device blocks it, report the warning rather than disabling device protection.
 
-- Do not run the project from inside a ZIP viewer.
-- Do not download only the extension folder: the helper files are also required.
-- Keep the project at the same location after setup. Moving or renaming it breaks the registered helper path until you rerun setup.
+### macOS
 
-### 2. Install the requirements for your operating system
+1. Download the package matching your Mac's chip and extract the ZIP.
+2. Open the matching **.dmg** in `desktop/release`.
+3. Drag **FrameDrop** onto **Applications**.
+4. Eject the disk image and open FrameDrop from Applications.
 
-Choose **one** section below.
+These previews are not notarized. If macOS blocks launch, signed/notarized distribution is still pending; do not disable system protections. Choosing the correct architecture does not remove this limitation.
 
-<details open>
-<summary><strong>Windows 10 / 11</strong></summary>
+### Linux, including Arch-based desktops
 
-1. Install a supported Python 3 release from [Python.org](https://www.python.org/downloads/windows/). Use the regular installer or install manager, not the embeddable ZIP. If offered, enable **Add Python to PATH** and install the launcher.
-2. Open **PowerShell** and install FFmpeg and Deno using Windows Package Manager:
-
-```powershell
-winget install --id Gyan.FFmpeg --exact
-winget install --id DenoLand.Deno --exact
-```
-
-3. Close PowerShell and open a **new** PowerShell window so updated PATH entries are available.
-4. Verify:
-
-```powershell
-py --version
-ffmpeg -version
-ffprobe -version
-deno --version
-```
-
-Each command should print a version, rather than “not recognized.” Python must be 3.10 or newer.
-
-If `winget` is unavailable, use the Windows builds linked by [FFmpeg](https://ffmpeg.org/download.html#build-windows) and [Deno's installation guide](https://docs.deno.com/runtime/getting_started/installation/). For a manually extracted FFmpeg build, add its **`bin`** directory to your user PATH; that directory must contain `ffmpeg.exe` and `ffprobe.exe`. Open a new terminal and verify again.
-
-If `py` is missing but `python --version` reports a supported Python 3, use `python` in place of `py` in this guide.
-
-</details>
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-If [Homebrew](https://brew.sh/) is installed, open Terminal and run:
+1. Download the Linux package and extract its ZIP.
+2. Extract **FrameDrop-ubuntu-22.04.tar.gz** using your archive manager.
+3. Open a terminal in the resulting folder containing both **install-linux.sh** and **FrameDrop/**.
+4. Run:
 
 ```sh
-brew install python ffmpeg deno
+sh install-linux.sh
 ```
 
-If Homebrew is not installed, follow its installation instructions first, including its printed shell setup instructions, or install the dependencies through their official download pages.
+5. Open **FrameDrop** from your application menu.
 
-Open a new Terminal window and verify:
+Run the installer as your normal user, **without sudo**. It installs to `${XDG_DATA_HOME:-$HOME/.local/share}/framedrop` and creates an application-menu entry. For a portable run, launch `./FrameDrop/FrameDrop` from the extracted folder.
 
-```sh
-python3 --version
-ffmpeg -version
-ffprobe -version
-deno --version
-```
-
-Each command must print a version. Python must be 3.10 or newer. If your shell still resolves an older system Python, use the newly installed Python interpreter to run setup.
-
-</details>
-
-<details>
-<summary><strong>Linux — Ubuntu / Debian</strong></summary>
-
-Use a distribution release with Python 3.10 or newer. In Terminal:
-
-```sh
-sudo apt update
-sudo apt install python3 python3-venv python3-pip ffmpeg curl unzip
-```
-
-Install Deno using its official installer:
-
-```sh
-curl -fsSL https://deno.land/install.sh -o /tmp/framedrop-deno-install.sh
-sh /tmp/framedrop-deno-install.sh
-```
-
-Follow the installer's PATH instructions. For its default installation location, make Deno available in the current terminal with:
-
-```sh
-export PATH="$HOME/.deno/bin:$PATH"
-```
-
-Persist that PATH entry in the startup file for your shell, following the Deno instructions, so future terminals can also find it.
-
-Verify:
-
-```sh
-python3 --version
-ffmpeg -version
-ffprobe -version
-deno --version
-```
-
-For Fedora or other distributions, install Python with virtual-environment support and FFmpeg/ffprobe using that distribution's package manager. Use the [official Deno installation guide](https://docs.deno.com/runtime/getting_started/installation/) for Deno, then run the same version checks. For Arch-based systems, use the next section.
-
-</details>
-
-<details>
-<summary><strong>Linux — Arch and Arch-based distributions</strong></summary>
-
-For Arch Linux and derivatives using pacman (such as EndeavourOS, CachyOS, or Manjaro), use your distribution's configured repositories:
-
-```sh
-sudo pacman -Syu --needed python python-pip ffmpeg deno
-```
-
-This command performs a full system upgrade as well as installing the requirements. Review pacman's transaction before accepting. Do not substitute a partial `pacman -Sy` upgrade.
-
-The [Python](https://archlinux.org/packages/core/x86_64/python/), [pip](https://archlinux.org/packages/extra/any/python-pip/), [FFmpeg](https://archlinux.org/packages/extra/x86_64/ffmpeg/), and [Deno](https://archlinux.org/packages/extra/x86_64/deno/) packages are available in the official Arch repositories. Derivatives can ship different versions. Python includes `venv`; do not look for Debian's `python3-venv` package on Arch. FFmpeg provides `ffprobe` too.
-
-Verify in your terminal:
-
-```sh
-python3 --version
-ffmpeg -version
-ffprobe -version
-deno --version
-```
-
-Continue with Step 3 to load the correct browser build, then open a terminal in the project root and run **one** matching setup command:
-
-```sh
-# Firefox
-python3 setup.py --browser firefox
-```
-
-```sh
-# Google Chrome — prompts for the extension ID
-python3 setup.py --browser chrome
-```
-
-```sh
-# Chromium — use this option for the Chromium browser, not Google Chrome
-python3 setup.py --browser chromium
-```
-
-Use `--browser edge` for Edge. Copy the ID from FrameDrop's card on the browser extensions page when prompted; the ID is different for each browser installation. You can still pass it explicitly with `--id YOUR_EXTENSION_ID`.
-
-Run FrameDrop setup as your **normal user**, without sudo. It installs yt-dlp into the project's `.venv`, avoiding changes to the system Python environment. You do not need `sudo pip` or `--break-system-packages`.
-
-If a later Arch Python upgrade breaks the old virtual environment, stop downloads, rename `.venv` to a backup name, and rerun setup using the current Python. This recreates the environment and registers the current helper path. Remove the backup only after the new setup works.
-
-</details>
-
-### 3. Load the extension for your browser
-
-#### Chrome / Edge / Chromium
-
-1. Open **`chrome://extensions`** in Chrome/Chromium or **`edge://extensions`** in Edge.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select the project's **`extension` folder**. It directly contains `manifest.json`.
-5. Copy FrameDrop's **32-letter extension ID** from the extensions page. You will use it in Step 4.
-6. Pin FrameDrop from the browser's extensions menu if you want a toolbar shortcut.
-
-**Folder check:** choose `FrameDrop/extension`, not the outer `FrameDrop` folder, and not `extension-firefox`.
-
-#### Firefox
-
-1. Open **`about:debugging#/runtime/this-firefox`**.
-2. Choose **Load Temporary Add-on**.
-3. Open the project's **`extension-firefox`** folder and select **`manifest.json`**.
-4. Use the fixed add-on ID **`framedrop@inianexe`**. The setup script supplies it automatically.
-
-Do not copy Firefox's internal UUID. The fixed add-on ID intentionally differs from the visible “by iniexe” branding.
-
-Firefox removes temporary add-ons when the browser closes. After restarting Firefox, repeat the temporary-loading steps. You do **not** have to reinstall dependencies or rerun helper setup each time. Persistent distribution requires a signed Firefox package; this repository does not include one. See [Mozilla's temporary-installation guide](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/).
-
-### 4. Connect the local helper
-
-Open a terminal **inside the project root**, where `setup.py` is located.
-
-- **Windows:** open the folder in File Explorer, type `powershell` in the address bar, and press Enter.
-- **macOS/Linux:** open Terminal and run `cd` followed by your folder path. You can drag the folder into Terminal to insert its path after `cd `.
-
-Run **one command** matching your browser and operating system. With v0.1.6+, you may omit `--id YOUR_EXTENSION_ID` in an interactive terminal: setup explains where to find the ID and prompts you to paste it. For scripts or non-interactive terminals, provide `--id` explicitly. Replace `YOUR_EXTENSION_ID` with the actual ID from Step 3; do not type the placeholder literally.
-
-| Browser | Windows PowerShell | macOS / Linux Terminal |
-| --- | --- | --- |
-| Firefox | `py setup.py --browser firefox` | `python3 setup.py --browser firefox` |
-| Chrome | `py setup.py --browser chrome --id YOUR_EXTENSION_ID` | `python3 setup.py --browser chrome --id YOUR_EXTENSION_ID` |
-| Edge | `py setup.py --browser edge --id YOUR_EXTENSION_ID` | `python3 setup.py --browser edge --id YOUR_EXTENSION_ID` |
-| Chromium | `py setup.py --browser chromium --id YOUR_EXTENSION_ID` | `python3 setup.py --browser chromium --id YOUR_EXTENSION_ID` |
-
-Setup performs these steps automatically:
-
-1. Creates an isolated Python environment in `.venv`.
-2. Installs or updates `yt-dlp[default]` there.
-3. Starts the helper's diagnostic check and verifies required programs can be found.
-4. Registers the helper for your browser and extension ID.
-
-Wait until you see **`Setup complete.`** If a dependency is marked **MISSING**, install it, verify its command works, and rerun the same setup command. Do not continue assuming registration succeeded.
-
-Restart the browser after the first setup. Firefox users must then load the temporary add-on again. Open a YouTube video and click FrameDrop: the video should be detected and its formats should appear.
-
-**You can close the terminal now.** The browser starts the helper when needed. If you use multiple browsers, run Step 4 separately for each browser; their extension IDs and registration locations differ.
+Arch, EndeavourOS, CachyOS and Manjaro users use this same Linux package. It is not a pacman/AUR package. Python, FFmpeg and Deno are bundled; the manual dependency commands in the legacy extension guide do not apply. A compatible graphical desktop and system graphics libraries are still required. **Clean Arch installation has not yet been verified.**
 
 ## Usage
 
-### Download a video
+### Save a video
 
-1. Open a single public YouTube video or Short that you own or have permission to save.
-2. Click the floating **✦ FrameDrop** button, or the pinned toolbar icon.
-3. Wait for quality discovery. If you switched videos, click the **↻** refresh button.
-4. Select **Video**.
-5. Choose a quality. For example, `2160p · 12 fps · MP4 · vp09` describes a **source** format, not a promise to upscale or change frame rate.
-6. Click **Download video**.
-7. Wait through downloading and merging until **Saved to …** appears.
-8. Open the output folder below and play the file.
+1. Copy the public video's page URL or direct media URL from your browser.
+2. Open FrameDrop, paste it into the link field, and click **Analyze link**.
+3. Wait for analysis to finish and the available qualities to appear.
+4. Select **Video**, then choose a quality offered by the source.
+5. Click **Choose save folder** if you want a different destination.
+6. Click **Download**. Keep the app open while it downloads and merges.
+7. Wait for **Saved to …**, then click **Open downloads folder**.
 
-### Download MP3 audio
+After pasting a different link, analyze it again before choosing its format. Quality depends on the source; FrameDrop does not upscale video. Separate video and audio streams are merged into MKV to preserve their codecs; a combined source may retain its original container. Selecting an MP4 source does not guarantee an MP4 final file.
 
-1. Open the video and wait for format discovery.
-2. Select **MP3 audio**.
-3. Choose **128**, **192**, or **320 kbps**.
-4. Click **Download MP3**.
-5. Wait for the download and conversion to finish, then open the output folder.
+### Save MP3 audio
 
-A higher MP3 bitrate cannot recover detail absent from the original audio.
+1. Paste the link and click **Analyze link**.
+2. Select **MP3 audio** and choose **128**, **192**, or **320 kbps**.
+3. Choose a destination if needed, then click **Download**.
+4. Wait for conversion and **Saved to …** before opening the folder.
 
-### Where files are saved
+A higher bitrate cannot restore detail missing from the source audio.
 
-| Operating system | Default output folder |
+### Find your downloads
+
+The default is **Downloads/FrameDrop beneath your user home**, on all platforms. It is independent of your browser's download directory. Use **Choose save folder** for a redirected or custom Downloads location; **Open downloads folder** opens the current destination.
+
+One job runs at a time. Progress can restart for the next stream, and merging/conversion may take additional time. This desktop preview does not provide the extension's cancellation control. Keep it open until the job finishes.
+
+## Supported links
+
+| Link type | Expected behavior |
 | --- | --- |
-| Windows | Your user home → `Downloads\FrameDrop` |
-| macOS | `~/Downloads/FrameDrop` |
-| Linux | `~/Downloads/FrameDrop` |
+| Public video page supported by yt-dlp | Extracts metadata and available formats |
+| Direct media file, such as MP4 | Downloads the file; quality choices may be limited |
+| Supported HTML video embed | Attempts to find the embedded media |
+| Unprotected HLS / DASH manifest | Downloads segments and merges streams as needed |
+| Unsupported page or browser-local blob URL | May fail; a page containing video is not automatically supported |
 
-This is the helper's folder under your user home, **not** a browser-selected download directory. A localized, redirected, or custom Downloads folder is not automatically detected in this version. The completion message shows the actual path used. Files will not appear as ordinary entries in the browser's Downloads panel because the helper writes them directly.
-
-### Understand formats and progress
-
-- Qualities depend on the formats yt-dlp can access for the current video. Some videos expose fewer options.
-- When video and audio arrive separately, FrameDrop merges them into **MKV**, preserving their codecs. A source that already contains audio may keep MP4 or WebM. The format menu describes the source stream; it does not force every final file to be MP4.
-- Repeated-looking menu entries are separate source formats. Automatic deduplication is not included.
-- Progress is reported per media stream. It may restart when the audio stream begins.
-- During merging or MP3 conversion, the progress indicator is indeterminate.
-- One task runs at a time. Closing the popup does not intentionally cancel it; keep the browser running.
-- **Cancel task** closes the helper connection. Partial files may remain. Check the folder before starting another download; support for resuming depends on the source and download state.
-- Use **Motion on/off** to control animations. Your system's reduced-motion setting takes priority.
+Private/login-required, age-restricted and DRM-protected media are outside supported scope. Playlists, multi-video pages and live streams are not guaranteed. Only save media you own or have permission to download.
 
 ## Troubleshooting
 
-| Problem | What to do |
+| Problem | What to check |
 | --- | --- |
-| `Supply --id with your extension ID for Chromium browsers` | This is the old installer. Download the latest source, or add `--id` followed by the actual ID from the FrameDrop card. Firefox setup success does not register Chrome. |
-| `background.service_worker is currently disabled` | You loaded the Chrome build in Firefox. Load `extension-firefox/manifest.json`. |
-| Manifest missing or unreadable | Extract the complete ZIP. In Chrome/Edge select `extension`; in Firefox select `extension-firefox/manifest.json`. |
-| Helper unavailable / native application not found | Run Step 4 for the correct browser. Check the exact extension ID and keep the project at its installed path. |
-| Helper disconnected / exited | Run the helper diagnostic below and read the actual error in the popup. A moved folder, deleted `.venv`, missing dependency, or browser sandbox can cause this. |
-| FFmpeg, ffprobe, or Deno is MISSING | Install the executable, open a new terminal, verify its version command, then rerun setup. A Python package with the same name is not enough. |
-| `python3-venv` / `ensurepip` error on Linux | Install the distribution's Python venv package, then rerun setup. On Ubuntu/Debian: `sudo apt install python3-venv`. |
-| `can't open file … setup.py` | Your terminal is in the wrong folder. Change into the folder containing `setup.py`. |
-| Permission / managed-browser error | Browser or device management may prohibit native messaging or developer extensions. Contact the device administrator. |
-| Toolbar button works but page button does not | Reload the YouTube page after installing the extension and use the pinned toolbar button. |
-| No formats, extractor error, or YouTube error | Update yt-dlp by rerunning setup, then try a permitted public video. Some videos/networks are inaccessible to the extractor. |
-| Final video is MKV | Expected for merged streams. FrameDrop preserves source codecs rather than promising MP4 conversion. |
-| “Saved” but browser Downloads is empty | Open the helper's `Downloads/FrameDrop` folder shown in the completion message. |
-| Firefox add-on disappears after restart | Reload the temporary add-on. This does not require rerunning helper setup. |
-| Works in one browser but not another | Register the helper for the second browser and its extension ID. Forks and Snap/Flatpak distributions need separate compatibility investigation. |
+| Download link asks for sign-in | Actions artifacts require a GitHub login. |
+| Only source files or setup.py appear | You downloaded repository source. Use your OS package in the table above. |
+| Missing helper or extension ID prompt | You are using the legacy extension. Open the desktop app for the bundled workflow. |
+| App does not launch | Confirm CPU architecture, fully extract the archive, and retain every bundled file. Record the exact OS warning/error. |
+| Linux Qt/graphics error | Launch the portable executable from a terminal and report the missing library/plugin text and distribution version. Bundled downloader tools do not replace system GUI libraries. |
+| No formats / unsupported URL | Check that the link is a public page or media URL. Try a different permitted public source; not all sites have an extractor. |
+| Site worked before but now fails | Extraction can break when a website changes. Check for a newer desktop build and report the exact error. |
+| Download appears finished but app is processing | Wait for merging or MP3 conversion and the Saved message. |
+| Cannot find output | Click Open downloads folder; the browser Downloads panel is unrelated. |
+| File ends in .mkv | Expected when merging separate streams; use a player that supports the source codecs. |
+| Permission denied / disk full | Choose a writable folder with enough room for both temporary streams and final output. |
 
-### Run a helper diagnostic
+For a bug report, include the app/build version, OS and CPU architecture, exact error, and a public example URL if appropriate. Remove private paths or sensitive data.
 
-From the project root, **after setup has created `.venv`**:
+## Update and uninstall
 
-Windows:
+There is no automatic updater in this preview. Close the app, download a newer package for the same architecture, and install it again. Installing the desktop app does not update or connect the old browser extension.
 
-```powershell
-.venv\Scripts\python.exe helper\doctor.py
-```
+- **Windows:** uninstall through the system's installed-apps settings.
+- **macOS:** remove FrameDrop from Applications.
+- **Linux:** remove the `framedrop` directory and `applications/framedrop.desktop` under your user data directory (normally `~/.local/share`). Remove only these FrameDrop items.
 
-macOS / Linux:
+Downloaded media is separate from the app installation and is not removed by these steps.
 
-```sh
-.venv/bin/python helper/doctor.py
-```
+## Verification and limitations
 
-The diagnostic starts the Python helper and checks native-message framing and dependency discovery. It **does not** prove browser registration or a real YouTube download works. If it succeeds but the browser cannot connect, rerun Step 4 and check the browser/ID/path.
+[All four platform jobs passed](https://github.com/inianexe/Framedrop/actions/runs/34566471892) for source commit `7227f4be7cad3f77f3fc4c36496926c5222754f5`. Packaged executable tests cover generated MP4, HTML embedded video, HLS, DASH with separate audio/video, and MP3 conversion. Offscreen GUI startup is also checked.
 
-When reporting a problem, include your OS, browser/version, FrameDrop version, exact popup message, and diagnostic output. Remove personal file paths if you do not want to share them.
+These tests do not establish successful downloads from every live website, interactive installation on clean machines, or universal OS support. Signing, macOS notarization, automatic updates and clean Arch installation testing remain unfinished.
 
-## Update
 
-1. Stop any active download.
-2. Back up the existing installation folder if needed.
-3. Replace its source files with the new release, keeping its location stable.
-4. Rerun the same `setup.py` command to update yt-dlp and refresh registration.
-5. Reload the extension from the browser's extensions page and refresh YouTube.
+## Earlier extension screenshots
 
-If you move to a new folder instead, load the extension from that folder and run setup there. Chrome/Edge may assign a different unpacked extension ID, so copy the current one again. Keep `.venv` and generated host files out of GitHub.
+These screenshots show the **v0.1.x browser extension**, not the desktop app. They demonstrate the original design, video detection and quality selection, not a completed download.
 
-## Privacy and scope
+![Extension video mode](docs/screenshots/video-mode.png)
+![Extension MP3 mode](docs/screenshots/mp3-mode.png)
+<details><summary>Extension quality selector</summary>
 
-FrameDrop does not operate a cloud conversion service or collect analytics. The extension passes the selected URL to the local helper, which contacts YouTube and its media services. Those network providers still receive normal requests. Popup task state, video metadata, and the motion preference are stored in the extension's local storage. See [PRIVACY.md](PRIVACY.md).
+![Extension available formats](docs/screenshots/quality-selector.png)
 
-This release supports individual accessible videos. Playlists, live/upcoming streams, login/cookie import, age-restricted media, and protected content are outside its supported scope. Download only material you own or are allowed to save.
+</details>
 
-## Development and verification
+## Development
 
-The extension is plain HTML, CSS, and JavaScript; there is no frontend build step. Python tests and the JavaScript background tests do not need YouTube access.
+Desktop source, build scripts and platform installers live in `desktop/`. See [desktop developer instructions](docs/DESKTOP-INSTALL.md#developer-instructions). The legacy extension remains v0.1.6 and has its own helper setup; see [its complete guide](docs/EXTENSION-INSTALL.md).
 
-```sh
-python3 -m unittest discover -s tests
-node --test tests/background.cjs
-python3 tools/check_repo.py
-```
+## Privacy and license
 
-On Windows, replace `python3` with `py`. `check_repo.py` also runs JavaScript syntax checks, so Node.js must be available for that developer command.
+Downloads and conversion run on your computer. FrameDrop has no hosted conversion service; the downloader contacts the source website and media hosts directly. See [privacy notes](PRIVACY.md).
 
-For an optional **mocked** browser UI smoke test:
-
-```sh
-npm install
-npx playwright install chromium
-npm run test:ui
-```
-
-The UI test uses fake metadata and does not download YouTube media. A GitHub Actions workflow runs the offline checks on pushes and pull requests. It has not yet run on your repository; do not treat the workflow file as a passing CI badge.
-
-**Verification at packaging:** local helper validation tests, background connection regression tests, and repository consistency checks are run before producing the ZIP. Supplied screenshots show the UI with discovered formats. Full browser/OS installation coverage and a completed live download have not been independently verified here. See [docs/VALIDATION.md](docs/VALIDATION.md).
-
-## Repository contents
-
-| Path | Purpose |
-| --- | --- |
-| `extension/` | Chrome, Edge, and Chromium build; load this folder |
-| `extension-firefox/` | Firefox build; load its manifest |
-| `helper/` | Python host, installer, requirements, and diagnostic |
-| `setup.py` | One setup entry point for dependency installation and registration |
-| `docs/screenshots/` | The three supplied screenshots used above |
-| `tests/` | Helper tests, background regression tests, optional UI smoke test |
-| `tools/` | Repository validation and clean ZIP packaging |
-| `.github/workflows/checks.yml` | Offline GitHub Actions checks |
-| `LICENSE` | MIT terms for FrameDrop source code |
-
-## Publish this repository
-
-Read [the GitHub upload guide](docs/GITHUB-UPLOAD.md) for exact steps, a suggested repository description, and release packaging instructions. **Upload the extracted contents so `README.md` sits at the repository root.** Uploading only the ZIP as a repository file will not display this README or its screenshots.
-
-## Credits and license
-
-Created by **iniexe**. Powered by [yt-dlp](https://github.com/yt-dlp/yt-dlp), [FFmpeg](https://ffmpeg.org/), and [Deno](https://deno.com/).
-
-FrameDrop source code is licensed under [MIT](LICENSE). Dependencies retain their own licenses. The supplied screenshots document the interface; third-party website/video imagery and trademarks remain with their respective owners. FrameDrop is not affiliated with YouTube, Google, Microsoft, or Mozilla.
+Created by **iniexe**. Powered by yt-dlp, FFmpeg, Deno, Python and PySide6. FrameDrop source is [MIT licensed](LICENSE); bundled dependencies retain their respective licenses. FrameDrop is not affiliated with the supported websites.
