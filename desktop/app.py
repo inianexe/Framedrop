@@ -167,6 +167,12 @@ QProgressBar::chunk {background:#a99a85;}
 
 
 if __name__ == '__main__':
+    if '--self-test' in sys.argv:
+        import unittest
+        import test_download
+        with open('framedrop-self-test.txt', 'w', encoding='utf-8') as report:
+            result = unittest.TextTestRunner(stream=report).run(unittest.defaultTestLoader.loadTestsFromModule(test_download))
+        sys.exit(0 if result.wasSuccessful() else 1)
     app = QApplication(sys.argv)
     window = Window()
     window.show()

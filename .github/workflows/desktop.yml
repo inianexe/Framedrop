@@ -31,12 +31,20 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
+            desktop/dist/FrameDrop/FrameDrop.exe --self-test
             desktop/dist/FrameDrop/FrameDrop.exe --smoke-test
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            desktop/dist/FrameDrop.app/Contents/MacOS/FrameDrop --self-test
             desktop/dist/FrameDrop.app/Contents/MacOS/FrameDrop --smoke-test
           else
+            desktop/dist/FrameDrop/FrameDrop --self-test
             desktop/dist/FrameDrop/FrameDrop --smoke-test
           fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-report-${{ matrix.os }}
+          path: framedrop-self-test.txt
       - name: Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
@@ -70,16 +78,17 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
+          pattern: FrameDrop-*
       - name: Publish desktop preview
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
-          if gh release view v0.2.0-desktop-preview.2 >/dev/null 2>&1; then
+          if gh release view v0.2.0-desktop-preview.3 >/dev/null 2>&1; then
             echo 'Preview already exists; artifacts remain available in this workflow run.'
             exit 0
           fi
           find artifacts -type f -print0 | xargs -0 sha256sum > SHA256SUMS.txt
           mapfile -d '' assets < <(find artifacts -type f -print0)
-          gh release create v0.2.0-desktop-preview.2 "${assets[@]}" SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title 'FrameDrop Desktop 0.2.0 — Preview' --notes 'Bundled local desktop app for Windows x64, macOS Intel/Apple Silicon, and Linux x64. Public video pages supported by yt-dlp, direct media links, video quality selection, and MP3 conversion. No manual Python setup or extension ID required. Windows setup EXE, macOS DMGs, and Linux tar.gz with install script included. Unsigned developer preview: not notarized, no automatic updates, and not certified across every OS/browser or live site. Read desktop/README.md in this tag before installing. Download only content you are permitted to save.'
+          gh release create v0.2.0-desktop-preview.3 "${assets[@]}" SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title 'FrameDrop Desktop 0.2.0 — Preview' --notes 'Bundled local desktop app for Windows x64, macOS Intel/Apple Silicon, and Linux x64. Public video pages supported by yt-dlp, direct media links, video quality selection, and MP3 conversion. No manual Python setup or extension ID required. Windows setup EXE, macOS DMGs, and Linux tar.gz with install script included. Unsigned developer preview: not notarized, no automatic updates, and not certified across every OS/browser or live site. Read desktop/README.md in this tag before installing. Download only content you are permitted to save.'

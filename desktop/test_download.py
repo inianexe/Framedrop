@@ -3,6 +3,10 @@ import functools, http.server, subprocess, tempfile, threading, unittest
 from pathlib import Path
 from engine import Engine, choices
 
+class SilentHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, format, *args): pass
+
+
 class DownloadTests(unittest.TestCase):
     def test_direct_media_and_mp3(self):
         import imageio_ffmpeg
@@ -14,7 +18,7 @@ class DownloadTests(unittest.TestCase):
                 'color=c=black:s=160x90:d=1','-f','lavfi','-i','sine=frequency=440:duration=1',
                 '-c:v','libx264','-c:a','aac','-shortest',str(root/'fixture.mp4')],
                 check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=tmp)
+            handler = functools.partial(SilentHandler, directory=tmp)
             server = http.server.ThreadingHTTPServer(('127.0.0.1',0), handler)
             thread = threading.Thread(target=server.serve_forever, daemon=True)
             thread.start()
@@ -27,6 +31,11 @@ class DownloadTests(unittest.TestCase):
                 self.assertTrue(list((root/'video').glob('*.mp4')))
                 mp3 = next((root/'audio').glob('*.mp3'))
                 self.assertGreater(mp3.stat().st_size, 1000)
+                (root/'index.html').write_text('<html><head><title>Fixture</title></head><body><video src="fixture.mp4" controls></video></body></html>')
+                page = f'http://127.0.0.1:{server.server_port}/index.html'
+                embedded = engine.inspect(page)
+                engine.download(page, 'video', choices(embedded)[0]['id'], root/'embedded')
+                self.assertTrue(list((root/'embedded').glob('*.mp4')))
                 for manifest, output_opts in [('stream.m3u8', ['-f', 'hls']), ('stream.mpd', ['-f', 'dash'])]:
                     subprocess.run([ff, '-y', '-i', str(root/'fixture.mp4'), '-c', 'copy'] + output_opts + [str(root/manifest)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     link = f'http://127.0.0.1:{server.server_port}/{manifest}'

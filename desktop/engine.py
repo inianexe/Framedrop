@@ -36,6 +36,12 @@ def choices(info):
     return list(reversed(result))
 
 
+class QuietLogger:
+    def debug(self, message): pass
+    def warning(self, message): pass
+    def error(self, message): pass
+
+
 class Engine:
     def __init__(self, progress=lambda data: None):
         self.progress = progress
@@ -44,7 +50,7 @@ class Engine:
         import imageio_ffmpeg
         root = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
         deno = root / 'bin' / ('deno.exe' if os.name == 'nt' else 'deno')
-        opts = dict(quiet=True, no_warnings=True, noprogress=True, noplaylist=True, age_limit=17,
+        opts = dict(logger=QuietLogger(), quiet=True, no_warnings=True, noprogress=True, noplaylist=True, playlistend=2, age_limit=17,
                     match_filter=guard, socket_timeout=25, retries=3,
                     ffmpeg_location=str(root/'bin') if (root/'bin'/'ffmpeg').exists() else imageio_ffmpeg.get_ffmpeg_exe(),
                     progress_hooks=[self.progress], windowsfilenames=True)
@@ -58,8 +64,11 @@ class Engine:
             info = ydl.extract_info(validate_url(url), download=False)
         if not info:
             raise ValueError('No supported public video was found.')
-        if info.get('_type') in ('playlist', 'multi_video') or 'entries' in info:
-            raise ValueError('This page contains multiple videos. Paste a single video link.')
+        if 'entries' in info:
+            entries = list(info['entries'])
+            if len(entries) != 1 or not entries[0] or 'entries' in entries[0]:
+                raise ValueError('This page contains multiple videos. Paste a single video link.')
+            info = entries[0]
         reason = guard(info)
         if reason:
             raise ValueError(reason)

@@ -8,7 +8,7 @@ The Desktop builds workflow builds Windows x64, Linux x64 (Ubuntu 22.04 baseline
 
 Download your platform artifact from GitHub Actions, extract the outer ZIP and enclosed tar.gz, and keep the extracted folder intact. Windows: open `FrameDrop/FrameDrop.exe`. Linux: open `FrameDrop/FrameDrop`. macOS: open `FrameDrop.app`.
 
-These are unsigned developer previews. Windows also has a per-user setup executable, macOS a drag-to-Applications DMG, and Linux an install-linux.sh script that adds FrameDrop to the application menu without sudo. macOS notarization, Windows signing, and automatic updates remain release work. Do not disable operating-system protections to run a build. The app bundles Python, Qt, yt-dlp, its EJS package, FFmpeg, and Deno. FFmpeg is supplied through imageio-ffmpeg; the desktop engine does not require a separate ffprobe executable. This differs from the legacy extension helper.
+These are unsigned developer previews. Windows also has a per-user setup executable, macOS a drag-to-Applications DMG, and Linux an install-linux.sh script that adds FrameDrop to the application menu without sudo. macOS notarization, Windows signing, and automatic updates remain release work. Do not disable operating-system protections to run a build. The app bundles Python, Qt, yt-dlp, its EJS package, FFmpeg, and Deno. Linux FFmpeg/ffprobe comes from yt-dlp/FFmpeg-Builds with asset digest verification; Windows and macOS FFmpeg is supplied through imageio-ffmpeg; the desktop engine does not require a separate ffprobe executable. This differs from the legacy extension helper.
 
 No browser extension, extension ID, Python installation, or manual pip commands are required for packaged builds. Downloads still need internet access. Desktop and extension are separate interfaces; the extension is currently YouTube-only.
 
@@ -42,3 +42,7 @@ A URL may return a complete media file, HTML referencing a player, or a manifest
 FrameDrop delegates page discovery and manifest interpretation to yt-dlp, then FFmpeg handles merging/conversion locally. It does not execute arbitrary page JavaScript as a browser, intercept traffic, or decrypt protected streams. The optional Deno runtime supports yt-dlp's YouTube extraction requirements.
 
 Research: [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp), [MDN media delivery](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Audio_and_video_delivery), [PyInstaller packaging](https://pyinstaller.org/en/stable/).
+
+## Verification
+
+The build runs the packaged executable against generated direct MP4, HTML video, HLS, and DASH fixtures, plus MP3 conversion. A separate offscreen GUI launch check verifies startup. These checks do not certify third-party websites or replace testing on real desktop installations.
