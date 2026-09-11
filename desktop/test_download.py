@@ -37,7 +37,7 @@ class DownloadTests(unittest.TestCase):
                 engine.download(page, 'video', choices(embedded)[0]['id'], root/'embedded')
                 self.assertTrue(list((root/'embedded').glob('*.mp4')))
                 for manifest, output_opts in [('stream.m3u8', ['-f', 'hls']), ('stream.mpd', ['-f', 'dash'])]:
-                    subprocess.run([ff, '-y', '-i', str(root/'fixture.mp4'), '-c', 'copy'] + output_opts + [str(root/manifest)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    subprocess.run([ff, '-y', '-i', str(root/'fixture.mp4'), '-c', 'copy'] + output_opts + [manifest], cwd=root, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     link = f'http://127.0.0.1:{server.server_port}/{manifest}'
                     media = engine.inspect(link)
                     destination = root/manifest.replace('.', '_')
